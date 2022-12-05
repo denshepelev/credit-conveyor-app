@@ -1,0 +1,33 @@
+{
+  "name": "credit-conveyor-app",
+  "version": "1.0.0",
+  "description": "credit-conveyor-microservice",
+  "main": "dist/app.js",
+  "scripts": {
+    "start": "tsc && node dist/app.js",
+    "lint": "eslint . --ext .ts",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "DenisShepelev",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/express": "^4.17.14",
+    "@types/node": "^18.11.10",
+    "@typescript-eslint/eslint-plugin": "^5.45.0",
+    "eslint": "^8.28.0",
+    "eslint-config-prettier": "^8.5.0",
+    "eslint-config-standard-with-typescript": "^23.0.0",
+    "eslint-plugin-import": "^2.26.0",
+    "eslint-plugin-n": "^15.5.1",
+    "eslint-plugin-prettier": "^4.2.1",
+    "eslint-plugin-promise": "^6.1.1",
+    "prettier": "2.8.0",
+    "ts-node": "^10.9.1",
+    "typescript": "^4.9.3"
+  },
+  "dependencies": {
+    "@types/properties-reader": "^2.1.1",
+    "express": "^4.18.2",
+    "properties-reader": "^2.2.0"
+  }
+}
