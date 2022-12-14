@@ -1,5 +1,6 @@
 {
   "compilerOptions": {
+    "experimentalDecorators": true,
     "target": "es2020",    //replaced with es5 02.12.2022                         
     "module": "commonjs",                    
     "lib": ["ES2020"],  //replaced with es6 02.12.2022                   
@@ -12,9 +13,7 @@
     "resolveJsonModule": true,
     "moduleResolution": "node",
     "sourceMap": true
-  }/*,
-  "include": [
-    ".eslintrc.js",
-    // another includes
-]*/
+  },
+  "include": ["./src/**/*.ts", "./test"],
+  "exclude": ["./test/*.ts","**/*.test.ts"]
 }

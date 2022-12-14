@@ -1,90 +1,84 @@
-import { MaritalStatus } from "../types/maritalStatus.enum";
-import { Gender } from "../types/gender.enum";
 import propertiesReader from "properties-reader";
 import * as calculator from "../utils/loanCalculation.util";
-import { EmploymentDTO } from "../dto/employment.dto";
 import { ScoringDataDTO } from "../dto/scoringData.dto";
 import { CreditDTO } from "../dto/credit.dto";
+import { EmploymentDTO } from "../dto/employment.dto";
+import { validateSync, ValidationError } from "class-validator";
 
-const rateProp = propertiesReader("src/credit-conveyor.properties", "utf-8", {
+const rateProp = propertiesReader("src/app.properties", "utf-8", {
   allowDuplicateSections: true,
 });
 
 export class CalculationService {
-  private amount: number;
-  private term: number;
-  private firstName: string;
-  private lastName: string;
-  private middleName: string;
-  private gender: Gender;
-  private birthDate: Date;
-  private passportSeries: string;
-  private passportNumber: string;
-  private passportIssueDate: Date;
-  private passportIssueBranch: string;
-  private maritalStatus: MaritalStatus;
-  private dependentAmount: number;
-  private employment: EmploymentDTO;
-  private account: string;
-  private isInsuranceEnabled: boolean;
-  private isSalaryClient: boolean;
   private readonly BASE_RATE = Number(rateProp.get("rate"));
-  scoringDataDTO: any;
 
-  constructor(parameters: ScoringDataDTO) {
-    this.amount = Number(parameters.amount);
-    this.term = Number(parameters.term);
-    this.firstName = parameters.firstName;
-    this.lastName = parameters.lastName;
-    this.middleName = parameters.middleName;
-    this.gender = parameters.gender;
-    this.birthDate = new Date(parameters.birthDate);
-    this.passportSeries = parameters.passportSeries;
-    this.passportNumber = parameters.passportNumber;
-    this.passportIssueDate = parameters.passportIssueDate;
-    this.passportIssueBranch = parameters.passportIssueBranch;
-    this.maritalStatus = parameters.maritalStatus;
-    this.dependentAmount = Number(parameters.dependentAmount);
-    this.employment = {
-      employmentStatus: parameters.employment.employmentStatus,
-      employerINN: parameters.employment.employerINN,
-      salary: Number(parameters.employment.salary),
-      position: parameters.employment.position,
-      workExperienceTotal: Number(parameters.employment.workExperienceTotal),
-      workExperienceCurrent: Number(
-        parameters.employment.workExperienceCurrent
-      ),
-    };
-    this.account = parameters.account;
-    this.isInsuranceEnabled = parameters.isInsuranceEnabled;
-    this.isSalaryClient = parameters.isSalaryClient;
-  }
-  public getCredit(): CreditDTO {
+  public getCredit(parameters: ScoringDataDTO): CreditDTO {
+    const scoringDataDTO: ScoringDataDTO = new ScoringDataDTO();
+
+    scoringDataDTO.amount = parameters.amount;
+    scoringDataDTO.term = parameters.term;
+    scoringDataDTO.firstName = parameters.firstName;
+    scoringDataDTO.lastName = parameters.lastName;
+    scoringDataDTO.middleName = parameters.middleName;
+    scoringDataDTO.gender = parameters.gender;
+    scoringDataDTO.birthDate = parameters.birthDate;
+    scoringDataDTO.passportSeries = parameters.passportSeries;
+    scoringDataDTO.passportNumber = parameters.passportNumber;
+    scoringDataDTO.passportIssueDate = parameters.passportIssueDate;
+    scoringDataDTO.passportIssueBranch = parameters.passportIssueBranch;
+    scoringDataDTO.maritalStatus = parameters.maritalStatus;
+    scoringDataDTO.dependentAmount = parameters.dependentAmount;
+    scoringDataDTO.account = parameters.account;
+    scoringDataDTO.isInsuranceEnabled = parameters.isInsuranceEnabled;
+    scoringDataDTO.isSalaryClient = parameters.isSalaryClient;
+
+    const employmentDTO = new EmploymentDTO();
+
+    employmentDTO.employmentStatus = parameters.employment.employmentStatus;
+    employmentDTO.employerINN = parameters.employment.employerINN;
+    employmentDTO.salary = parameters.employment.salary;
+    employmentDTO.position = parameters.employment.position;
+    employmentDTO.workExperienceTotal =
+      parameters.employment.workExperienceTotal;
+    employmentDTO.workExperienceCurrent =
+      parameters.employment.workExperienceCurrent;
+
+    scoringDataDTO.employment = employmentDTO;
+
+    const errors: Array<ValidationError> = validateSync(scoringDataDTO, {
+      validationError: { target: false },
+      stopAtFirstError: false,
+    });
+
+    if (errors.length > 0) {
+      throw new Error(JSON.stringify(errors));
+    }
+
     const roundFunction = (number: number) =>
       Math.round((number + Number.EPSILON) * 100) / 100;
 
     const totalAmount: number = calculator.calculateTotalAmount(
-      this.amount,
-      this.term,
-      this.isInsuranceEnabled
+      scoringDataDTO.amount,
+      scoringDataDTO.term,
+      scoringDataDTO.isInsuranceEnabled
     );
 
     const totalRate: number = calculator.calculateTotalRate(
       this.BASE_RATE,
-      this.isInsuranceEnabled,
-      this.isSalaryClient,
-      this.gender,
-      calculator.calculateAge(this.birthDate),
-      this.employment.employmentStatus,
-      this.employment.position,
-      this.maritalStatus,
-      this.dependentAmount
+      scoringDataDTO.isInsuranceEnabled,
+      scoringDataDTO.isSalaryClient,
+      scoringDataDTO.gender,
+      calculator.calculateAge(new Date(scoringDataDTO.birthDate)),
+      scoringDataDTO.employment.employmentStatus,
+      scoringDataDTO.employment.position,
+      scoringDataDTO.maritalStatus,
+      scoringDataDTO.dependentAmount
     );
     const rateProportion: number =
       calculator.calculateRateProportion(totalRate);
     const monthlyPayment: number = calculator.calculateMonthlyPayment(
       totalAmount,
-      this.term,
+      scoringDataDTO.term,
       rateProportion
     );
 
@@ -99,7 +93,7 @@ export class CalculationService {
       return dateCopy;
     }
 
-    for (let index = 1; index < this.term + 1; index++) {
+    for (let index = 1; index < scoringDataDTO.term + 1; index++) {
       paymentDates.push(addMonths(1, paymentDates[index - 1]));
       paymentAmounts.push(monthlyPayment);
     }
@@ -108,17 +102,17 @@ export class CalculationService {
 
     const credit: CreditDTO = {
       amount: totalAmount,
-      term: this.term,
+      term: scoringDataDTO.term,
       monthlyPayment: monthlyPayment,
       rate: totalRate,
       psk: pskResult,
-      isInsuranceEnabled: this.isInsuranceEnabled,
-      isSalaryClient: this.isSalaryClient,
+      isInsuranceEnabled: scoringDataDTO.isInsuranceEnabled,
+      isSalaryClient: scoringDataDTO.isSalaryClient,
       paymentSchedule: [],
     };
     const startPayDay: Date = new Date();
 
-    //вносим информацию о первом платеже
+    //add first payment parameters into paymentScheduleElement for next calculations
     credit.paymentSchedule.push({
       number: 1,
       date: startPayDay,
@@ -132,10 +126,10 @@ export class CalculationService {
       ),
     });
     /*
-     *вносим информацию об остальных платежах используя
-     * тип платежей «Аннуитетный» (каждый новый расчет использует данные из предыдущего платежа)
+     * add next payments into paymentScheduleElement according to our schedule
+     * credit type:  - Fixed annuities (with fixed payments)
      */
-    for (let index = 1; index < this.term; index++) {
+    for (let index = 1; index < scoringDataDTO.term; index++) {
       const paymentNumber: number = index + 1;
       const date: Date = addMonths(index, startPayDay);
       const totalPayment =

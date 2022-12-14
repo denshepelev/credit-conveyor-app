@@ -5,6 +5,6 @@ import * as offerController from "../controllers/offer.controller";
 const router = express.Router();
 
 /* POST offers */
-router.post("/conveyor/offers", offerController.createOffers);
+router.post("/", offerController.createOffers);
 
 export { router as default };
