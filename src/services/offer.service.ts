@@ -2,92 +2,123 @@ import propertiesReader from "properties-reader";
 import * as calculator from "../utils/loanCalculation.util";
 import { LoanApplicationRequestDTO } from "../dto/loanApplicationRequest.dto";
 import { LoanOfferDTO } from "../dto/loanOffer.dto";
+import { validateSync, ValidationError } from "class-validator";
 
-const rateProp = propertiesReader("src/credit-conveyor.properties", "utf-8", {
+const rateProp = propertiesReader("src/app.properties", "utf-8", {
   allowDuplicateSections: true,
 });
 
 export class OfferService {
-  private amount: number;
-  private term: number;
-  private firstName: string;
-  private lastName: string;
-  private middleName: string;
-  private email: string;
-  private birthDate: Date;
-  private passportSeries: string;
-  private passportNumber: string;
-  private loanOfferDTOList: Array<LoanOfferDTO>;
   private readonly BASE_RATE = Number(rateProp.get("rate"));
-
-  constructor(parameters: LoanApplicationRequestDTO) {
-    this.amount = Number(parameters.amount);
-    this.term = Number(parameters.term);
-    this.firstName = parameters.firstName;
-    this.lastName = parameters.lastName;
-    this.middleName = parameters.middleName;
-    this.email = parameters.email;
-    this.birthDate = parameters.birthDate;
-    this.passportSeries = parameters.passportSeries;
-    this.passportNumber = parameters.passportNumber;
-    this.loanOfferDTOList = [];
-  }
 
   /**
    * get offer list
    */
-  public getLoanOfferDTOList(): Array<LoanOfferDTO> {
+  public getLoanOfferDTOList(
+    parameters: LoanApplicationRequestDTO
+  ): Array<LoanOfferDTO> {
+    const loanOfferDTOList: Array<LoanOfferDTO> = [];
+
+    const loanApplicationRequestDTO: LoanApplicationRequestDTO =
+      new LoanApplicationRequestDTO();
+
+    loanApplicationRequestDTO.amount = parameters.amount;
+    loanApplicationRequestDTO.term = parameters.term;
+    loanApplicationRequestDTO.firstName = parameters.firstName;
+    loanApplicationRequestDTO.lastName = parameters.lastName;
+    loanApplicationRequestDTO.middleName = parameters.middleName;
+    loanApplicationRequestDTO.email = parameters.email;
+    loanApplicationRequestDTO.birthDate = parameters.birthDate;
+    loanApplicationRequestDTO.passportSeries = parameters.passportSeries;
+    loanApplicationRequestDTO.passportNumber = parameters.passportNumber;
+
+    const errors: Array<ValidationError> = validateSync(
+      loanApplicationRequestDTO,
+      {
+        validationError: { target: false },
+        stopAtFirstError: false,
+      }
+    );
+
+    if (errors.length > 0) {
+      throw new Error(JSON.stringify(errors));
+    }
+
+    const addOffer = (
+      applicationId: number,
+      amount: number,
+      term: number,
+      isInsuranceEnabled: boolean,
+      isSalaryClient: boolean
+    ) => {
+      const totalAmount: number = calculator.calculateTotalAmount(
+        amount,
+        term,
+        isInsuranceEnabled
+      );
+
+      const totalRate = calculator.calculateTotalRate(
+        this.BASE_RATE,
+        isInsuranceEnabled,
+        isSalaryClient
+      );
+
+      const rateProportion = calculator.calculateRateProportion(totalRate);
+
+      const monthlyPayment = calculator.calculateMonthlyPayment(
+        totalAmount,
+        term,
+        rateProportion
+      );
+
+      loanOfferDTOList.push({
+        applicationId: applicationId,
+        requestedAmount: amount,
+        totalAmount: calculator.roundFunction(totalAmount),
+        term: term,
+        monthlyPayment: monthlyPayment,
+        rate: totalRate,
+        isInsuranceEnabled: isInsuranceEnabled,
+        isSalaryClient: isSalaryClient,
+      });
+    };
+
     //case_1: Insurance = false, SalaryClient = false;
-    this.addOffer(1, this.amount, this.term, false, false);
+    addOffer(
+      1,
+      loanApplicationRequestDTO.amount,
+      loanApplicationRequestDTO.term,
+      false,
+      false
+    );
 
     //case_2: Insurance = true, SalaryClient = false;
-    this.addOffer(2, this.amount, this.term, true, false);
+    addOffer(
+      2,
+      loanApplicationRequestDTO.amount,
+      loanApplicationRequestDTO.term,
+      true,
+      false
+    );
 
     //case_3: Insurance = true, SalaryClient = false;
-    this.addOffer(3, this.amount, this.term, false, true);
+    addOffer(
+      3,
+      loanApplicationRequestDTO.amount,
+      loanApplicationRequestDTO.term,
+      false,
+      true
+    );
 
     //case_4: Insurance = true, SalaryClient = false;
-    this.addOffer(4, this.amount, this.term, true, true);
-
-    return this.loanOfferDTOList.sort((n1, n2) => n1.rate - n2.rate);
-  }
-
-  private addOffer(
-    applicationId: number,
-    amount: number,
-    term: number,
-    isInsuranceEnabled: boolean,
-    isSalaryClient: boolean
-  ) {
-    const totalAmount = calculator.calculateTotalAmount(
-      amount,
-      term,
-      isInsuranceEnabled
+    addOffer(
+      4,
+      loanApplicationRequestDTO.amount,
+      loanApplicationRequestDTO.term,
+      true,
+      true
     );
 
-    const totalRate = calculator.calculateTotalRate(
-      this.BASE_RATE,
-      isInsuranceEnabled,
-      isSalaryClient
-    );
-
-    const rateProportion = calculator.calculateRateProportion(totalRate);
-
-    const monthlyPayment = calculator.calculateMonthlyPayment(
-      totalAmount,
-      term,
-      rateProportion
-    );
-
-    this.loanOfferDTOList.push({
-      applicationId: applicationId,
-      requestedAmount: amount,
-      totalAmount: totalAmount,
-      term: term,
-      monthlyPayment: monthlyPayment,
-      rate: totalRate,
-      isInsuranceEnabled: isInsuranceEnabled,
-      isSalaryClient: isSalaryClient,
-    });
+    return loanOfferDTOList.sort((n1, n2) => n1.rate - n2.rate);
   }
 }

@@ -169,24 +169,24 @@ const calculateTotalRate = (
 
 const calculatePSK = function (dates: Array<Date>, sum: Array<number>): number {
   /*
-   * используется метод приближенного вычисления с точностью до двух знаков после запятой
-   * входящие данные: dates - даты платежей
-   * входящие данные: sum - суммы платежей
+   * the approximate calculation  method is used with an accuracy of two decimal places
+   * incoming parameters: dates - payment dates
+   * incoming parameters: sum - payment total sum
    */
   const m = dates.length; // число платежей
 
-  //Задаем базовый период bp
+  //base period assignment bp
   const bp = 30;
-  //Считаем число базовых периодов в календарном году:
+  //calculate base period amount in year:
   const cbp = Math.round(365 / bp);
 
-  //заполним массив с количеством дней с даты выдачи до даты к-го платежа
+  //filling array with days amount since receiving credit to day ever incrementing k payment
   const days: Array<any> = [];
   for (let k = 0; k < m; k++) {
     days[k] = (dates[k].getTime() - dates[0].getTime()) / (24 * 60 * 60 * 1000);
   }
 
-  //посчитаем Ек и Qк для каждого платежа
+  //calculating Ек и Qк for each payment
   const e = [];
   const q = [];
   for (let k = 0; k < m; k++) {
@@ -194,7 +194,7 @@ const calculatePSK = function (dates: Array<Date>, sum: Array<number>): number {
     q[k] = Math.floor(days[k] / bp);
   }
 
-  //Методом перебора начиная с 0 ищем i до максимального приближения с шагом s
+  //checking each i in loop starting with 0 to best approximation using step s
   let i = 0;
   let x = 1;
   let x_m = 0;
@@ -211,11 +211,9 @@ const calculatePSK = function (dates: Array<Date>, sum: Array<number>): number {
     i = i - s;
   }
 
-  //считаем ПСК
+  //calculating psk result
   const psk = Math.floor(i * cbp * 100 * 1000) / 1000;
 
-  //выводим ПСК
-  //console.log("ПСК = " + psk + " %");
   return psk;
 };
 
@@ -226,6 +224,9 @@ const calculateAge = (birthDate: Date): number => {
   return age;
 };
 
+const roundFunction = (number: number) =>
+  Math.round((number + Number.EPSILON) * 100) / 100;
+
 export {
   calculateMonthlyPayment,
   calculateRateProportion,
@@ -233,4 +234,5 @@ export {
   calculateTotalRate,
   calculatePSK,
   calculateAge,
+  roundFunction,
 };

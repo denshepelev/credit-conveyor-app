@@ -5,9 +5,6 @@ import * as calculationController from "../controllers/calculation.controller";
 const router = express.Router();
 
 /* POST scoring */
-router.post(
-  "/conveyor/calculation",
-  calculationController.getCalculationResult
-);
+router.post("/", calculationController.getCalculationResult);
 
 export { router as default };
