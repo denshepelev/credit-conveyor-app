@@ -3,6 +3,7 @@ import * as calculator from "../utils/loanCalculation.util";
 import { LoanApplicationRequestDTO } from "../dto/loanApplicationRequest.dto";
 import { LoanOfferDTO } from "../dto/loanOffer.dto";
 import { validateSync, ValidationError } from "class-validator";
+import { ConveyorValidationError } from "../errors/conveyorValidation.error";
 
 const rateProp = propertiesReader("src/app.properties", "utf-8", {
   allowDuplicateSections: true,
@@ -35,13 +36,15 @@ export class OfferService {
     const errors: Array<ValidationError> = validateSync(
       loanApplicationRequestDTO,
       {
-        validationError: { target: false },
-        stopAtFirstError: false,
+        validationError: { target: false, value: false },
+        stopAtFirstError: true,
       }
     );
 
     if (errors.length > 0) {
-      throw new Error(JSON.stringify(errors));
+      //throw new Error(JSON.stringify(errors[0].constraints));
+      throw new ConveyorValidationError(JSON.stringify(errors[0].constraints));
+      //throw new ValidationError();
     }
 
     const addOffer = (

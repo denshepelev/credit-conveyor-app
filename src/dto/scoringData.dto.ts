@@ -45,7 +45,7 @@ export class ScoringDataDTO {
   @IsDefined()
   @IsDateString()
   @MinAge(18)
-  birthDate!: Date;
+  birthDate!: string;
   @IsDefined()
   @IsString()
   @Length(4, 4, {

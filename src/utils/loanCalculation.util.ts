@@ -217,11 +217,17 @@ const calculatePSK = function (dates: Array<Date>, sum: Array<number>): number {
   return psk;
 };
 
-const calculateAge = (birthDate: Date): number => {
+/*const calculateAge = (birthDate: Date): number => {
   const diffMs: number = Date.now() - birthDate.getTime();
   const ageDate: Date = new Date(diffMs);
   const age: number = Math.abs(ageDate.getUTCFullYear() - 1970);
   return age;
+};*/ //old one remove on next update;
+
+const calculateAge = (birthday: Date): number => {
+  const ageDifMs = Date.now() - birthday.getTime();
+  const ageDate = new Date(ageDifMs); // milliseconds from epoch
+  return Math.abs(ageDate.getUTCFullYear() - 1970);
 };
 
 const roundFunction = (number: number) =>

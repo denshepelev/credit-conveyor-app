@@ -1,9 +1,11 @@
 import propertiesReader from "properties-reader";
 import * as calculator from "../utils/loanCalculation.util";
+import * as rejectionRules from "../utils/rejectionRules.util";
 import { ScoringDataDTO } from "../dto/scoringData.dto";
 import { CreditDTO } from "../dto/credit.dto";
 import { EmploymentDTO } from "../dto/employment.dto";
 import { validateSync, ValidationError } from "class-validator";
+import { ConveyorValidationError } from "../errors/conveyorValidation.error";
 
 const rateProp = propertiesReader("src/app.properties", "utf-8", {
   allowDuplicateSections: true,
@@ -45,14 +47,34 @@ export class CalculationService {
 
     scoringDataDTO.employment = employmentDTO;
 
+    //⇩ validation block for input data ⇩
     const errors: Array<ValidationError> = validateSync(scoringDataDTO, {
-      validationError: { target: false },
-      stopAtFirstError: false,
+      validationError: { target: false, value: false },
+      stopAtFirstError: true,
     });
-
     if (errors.length > 0) {
-      throw new Error(JSON.stringify(errors));
+      throw new ConveyorValidationError(JSON.stringify(errors[0].constraints));
     }
+    //⇧ validation block for input data ⇧
+
+    // ⇩ Checking block according conveyor rules ⇩
+    rejectionRules.checkAgeLimits(
+      calculator.calculateAge(new Date(Date.parse(scoringDataDTO.birthDate)))
+    );
+    rejectionRules.checkEmploymentStatus(
+      scoringDataDTO.employment.employmentStatus
+    );
+    rejectionRules.checkMaxAmount(
+      scoringDataDTO.amount,
+      scoringDataDTO.employment.salary
+    );
+    rejectionRules.checkWorkExperienceCurrent(
+      scoringDataDTO.employment.workExperienceCurrent
+    );
+    rejectionRules.checkWorkExperienceTotal(
+      scoringDataDTO.employment.workExperienceTotal
+    );
+    // ⇧ checking block according conveyor rules ⇧
 
     const roundFunction = (number: number) =>
       Math.round((number + Number.EPSILON) * 100) / 100;

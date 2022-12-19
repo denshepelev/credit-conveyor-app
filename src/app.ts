@@ -1,7 +1,7 @@
 import express from "express";
 //import offerRouter from "./routers/offer.router";
 //import calculationRouter from "./routers/calculation.router";
-import conveyorRoute from "./routers/conveyorRoute";
+import conveyorRoute from "./routes/conveyor.route";
 const app = express();
 const port = 3000;
 

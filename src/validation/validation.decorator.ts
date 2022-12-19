@@ -21,14 +21,14 @@ export function MinAge(
         validate(value: any, args: ValidationArguments): boolean {
           //const [relatedPropertyName] = args.constraints;
           //const relatedValue = (args.object as any)[relatedPropertyName];
-          const _calculateAgee = (birthday: Date) => {
+          const _calculateAge = (birthday: Date) => {
             const ageDifMs = Date.now() - birthday.getTime();
             const ageDate = new Date(ageDifMs); // milliseconds from epoch
             return Math.abs(ageDate.getUTCFullYear() - 1970);
           };
           let age: number;
           try {
-            age = _calculateAgee(new Date(Date.parse(value)));
+            age = _calculateAge(new Date(Date.parse(value)));
             /*console.log(`value: ${value}`);
              *console.log(`relatedValue: ${relatedValue}`);
              *console.log(`age: ${age}`);

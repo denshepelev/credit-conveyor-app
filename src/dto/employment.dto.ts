@@ -2,7 +2,7 @@ import {
   IsDefined,
   IsNumber,
   IsString,
-  Min,
+  //Min,
   NotContains,
 } from "class-validator";
 import { EmploymentStatus } from "../types/employmentStatus.enum";
@@ -24,10 +24,10 @@ export class EmploymentDTO {
   position!: Position;
   @IsDefined()
   @IsNumber()
-  @Min(12)
+  //@Min(12)
   workExperienceTotal!: number;
   @IsDefined()
   @IsNumber()
-  @Min(6)
+  //@Min(6)
   workExperienceCurrent!: number;
 }
