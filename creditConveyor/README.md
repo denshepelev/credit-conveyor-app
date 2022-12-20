@@ -68,13 +68,13 @@ body:
 ## Installation
 
 ```bash
-$ npm install
+npm install
 ```
 
 ## Running the app
 
 ```bash
-$ npm start
+npm start
 ```
 
 ## Test

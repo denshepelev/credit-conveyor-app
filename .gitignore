@@ -1,6 +1,10 @@
 # compiled output
 /dist
 /node_modules
+/creditConveyor/node_modules
+/creditConveyo/dist
+/microservice1/node_modules
+/microservice2/node_modules
 
 # Logs
 logs
