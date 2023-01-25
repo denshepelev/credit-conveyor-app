@@ -1,0 +1,248 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:pro="http://www.liquibase.org/xml/ns/pro" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/pro http://www.liquibase.org/xml/ns/pro/liquibase-pro-4.1.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.1.xsd">
+    <changeSet author="denis (generated)" id="1673388467363-1">
+        <createTable tableName="accounts">
+            <column autoIncrement="true" name="user_id" type="INTEGER">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="accounts_pkey"/>
+            </column>
+            <column name="username" type="VARCHAR(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="password" type="VARCHAR(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="email" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="denis (generated)" id="1673388467363-2">
+        <createTable tableName="application">
+            <column autoIncrement="true" name="application_id" type="INTEGER">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="application_pkey"/>
+            </column>
+            <column name="client_id" type="INTEGER">
+                <constraints nullable="false"/>
+            </column>
+            <column name="credit_id" type="INTEGER"/>
+            <column name="status" type="VARCHAR(30)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="creation_date" type="date">
+                <constraints nullable="false"/>
+            </column>
+            <column name="applied_offer" type="JSONB"/>
+            <column name="sign_date" type="date"/>
+            <column defaultValue="NULL::bpchar" name="ses_code" type="VARCHAR(30)"/>
+            <column name="status_history" type="JSONB"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="denis (generated)" id="1673388467363-3">
+        <createTable tableName="application_status">
+            <column name="application_status" type="CHAR(30)">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="application_status_pkey"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="denis (generated)" id="1673388467363-4">
+        <createTable tableName="change_type">
+            <column name="change_type" type="VARCHAR(30)">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="change_type_pkey"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="denis (generated)" id="1673388467363-5">
+        <createTable tableName="client">
+            <column autoIncrement="true" name="client_id" type="INTEGER">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="client_pkey"/>
+            </column>
+            <column name="last_name" type="VARCHAR(30)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="first_name" type="VARCHAR(30)">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValue="NULL::bpchar" name="middle_name" type="VARCHAR(30)"/>
+            <column name="birth_date" type="date">
+                <constraints nullable="false"/>
+            </column>
+            <column name="email" type="VARCHAR(30)">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValue="NULL::bpchar" name="gender" type="VARCHAR(30)"/>
+            <column defaultValue="NULL::bpchar" name="marital_status" type="VARCHAR(30)"/>
+            <column name="dependent_amount" type="INTEGER"/>
+            <column name="passport_id" type="INTEGER"/>
+            <column name="employment_id" type="INTEGER"/>
+            <column defaultValue="NULL::bpchar" name="account" type="VARCHAR(30)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="denis (generated)" id="1673388467363-6">
+        <createTable tableName="credit">
+            <column autoIncrement="true" name="credit_id" type="INTEGER">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="credit_pkey"/>
+            </column>
+            <column name="amount" type="numeric">
+                <constraints nullable="false"/>
+            </column>
+            <column name="term" type="INTEGER">
+                <constraints nullable="false"/>
+            </column>
+            <column name="monthly_payment" type="numeric">
+                <constraints nullable="false"/>
+            </column>
+            <column name="rate" type="numeric">
+                <constraints nullable="false"/>
+            </column>
+            <column name="psk" type="numeric">
+                <constraints nullable="false"/>
+            </column>
+            <column name="payment_schedule" type="JSONB">
+                <constraints nullable="false"/>
+            </column>
+            <column name="insurance_enable" type="BOOLEAN">
+                <constraints nullable="false"/>
+            </column>
+            <column name="salary_client" type="BOOLEAN">
+                <constraints nullable="false"/>
+            </column>
+            <column name="credit_status" type="VARCHAR(30)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="denis (generated)" id="1673388467363-7">
+        <createTable tableName="credit_status">
+            <column name="credit_status" type="VARCHAR(30)">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="credit_status_pkey"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="denis (generated)" id="1673388467363-8">
+        <createTable tableName="employment">
+            <column autoIncrement="true" name="employment_id" type="INTEGER">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="employment_pkey"/>
+            </column>
+            <column name="status" type="VARCHAR(30)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="employer_inn" type="VARCHAR(30)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="salary" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="position" type="VARCHAR(30)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="work_experience_total" type="INTEGER">
+                <constraints nullable="false"/>
+            </column>
+            <column name="work_experience_current" type="INTEGER">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="denis (generated)" id="1673388467363-9">
+        <createTable tableName="employment_position">
+            <column name="employment_position" type="VARCHAR(30)">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="employment_position_pkey"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="denis (generated)" id="1673388467363-10">
+        <createTable tableName="employment_status">
+            <column name="employment_status" type="VARCHAR(30)">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="employment_status_pkey"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="denis (generated)" id="1673388467363-11">
+        <createTable tableName="gender">
+            <column name="gender" type="VARCHAR(30)">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="gender_pkey"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="denis (generated)" id="1673388467363-12">
+        <createTable tableName="marital_status">
+            <column name="marital_status" type="VARCHAR(30)">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="marital_status_pkey"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="denis (generated)" id="1673388467363-13">
+        <createTable tableName="passport">
+            <column autoIncrement="true" name="passport_id" type="INTEGER">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="passport_pkey"/>
+            </column>
+            <column name="series" type="VARCHAR(30)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="issue_branch" type="VARCHAR(30)"/>
+            <column name="issue_date" type="date"/>
+            <column name="number" type="VARCHAR(30)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="denis (generated)" id="1673388467363-14">
+        <createTable tableName="status_history">
+            <column name="time" type="date">
+                <constraints nullable="false"/>
+            </column>
+            <column name="change_type" type="VARCHAR(30)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="status" type="VARCHAR(30)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="application_id" type="INTEGER">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="denis (generated)" id="1673388467363-15">
+        <addUniqueConstraint columnNames="email" constraintName="accounts_email_key" tableName="accounts"/>
+    </changeSet>
+    <changeSet author="denis (generated)" id="1673388467363-16">
+        <addUniqueConstraint columnNames="username" constraintName="accounts_username_key" tableName="accounts"/>
+    </changeSet>
+    <changeSet author="denis (generated)" id="1673388467363-17">
+        <addUniqueConstraint columnNames="email" constraintName="email" tableName="client"/>
+    </changeSet>
+    <changeSet author="denis (generated)" id="1673388467363-18">
+        <addUniqueConstraint columnNames="series, number" constraintName="series_number" tableName="passport"/>
+    </changeSet>
+    <changeSet author="denis (generated)" id="1673388467363-19">
+        <addForeignKeyConstraint baseColumnNames="application_id" baseTableName="status_history" constraintName="application_id" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="application_id" referencedTableName="application" validate="true"/>
+    </changeSet>
+    <changeSet author="denis (generated)" id="1673388467363-20">
+        <addForeignKeyConstraint baseColumnNames="change_type" baseTableName="status_history" constraintName="change_type" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="change_type" referencedTableName="change_type" validate="true"/>
+    </changeSet>
+    <changeSet author="denis (generated)" id="1673388467363-21">
+        <addForeignKeyConstraint baseColumnNames="client_id" baseTableName="application" constraintName="client_id" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="client_id" referencedTableName="client" validate="true"/>
+    </changeSet>
+    <changeSet author="denis (generated)" id="1673388467363-22">
+        <addForeignKeyConstraint baseColumnNames="credit_id" baseTableName="application" constraintName="credit_id" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="credit_id" referencedTableName="credit" validate="true"/>
+    </changeSet>
+    <changeSet author="denis (generated)" id="1673388467363-23">
+        <addForeignKeyConstraint baseColumnNames="credit_status" baseTableName="credit" constraintName="credit_status" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="credit_status" referencedTableName="credit_status" validate="true"/>
+    </changeSet>
+    <changeSet author="denis (generated)" id="1673388467363-24">
+        <addForeignKeyConstraint baseColumnNames="employment_id" baseTableName="client" constraintName="employment_id" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="employment_id" referencedTableName="employment" validate="true"/>
+    </changeSet>
+    <changeSet author="denis (generated)" id="1673388467363-25">
+        <addForeignKeyConstraint baseColumnNames="gender" baseTableName="client" constraintName="gender" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="gender" referencedTableName="gender" validate="true"/>
+    </changeSet>
+    <changeSet author="denis (generated)" id="1673388467363-26">
+        <addForeignKeyConstraint baseColumnNames="marital_status" baseTableName="client" constraintName="marital_status" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="marital_status" referencedTableName="marital_status" validate="true"/>
+    </changeSet>
+    <changeSet author="denis (generated)" id="1673388467363-27">
+        <addForeignKeyConstraint baseColumnNames="passport_id" baseTableName="client" constraintName="passport_id" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="passport_id" referencedTableName="passport" validate="true"/>
+    </changeSet>
+    <changeSet author="denis (generated)" id="1673388467363-28">
+        <addForeignKeyConstraint baseColumnNames="position" baseTableName="employment" constraintName="position" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="employment_position" referencedTableName="employment_position" validate="true"/>
+    </changeSet>
+    <changeSet author="denis (generated)" id="1673388467363-29">
+        <addForeignKeyConstraint baseColumnNames="status" baseTableName="application" constraintName="status" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="application_status" referencedTableName="application_status" validate="true"/>
+    </changeSet>
+</databaseChangeLog>

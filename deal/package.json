@@ -1,0 +1,68 @@
+{
+  "name": "@credit-conveyor-app/deal",
+  "version": "1.0.0",
+  "description": "",
+  "main": "./dist/server.js",
+  "modulePaths": [
+    "<rootDir>"
+  ],
+  "type": "module",
+  "husky": {
+    "hooks": {
+      "pre-commit": "npm run lint"
+    }
+  },
+  "scripts": {
+    "test": "cross-env NODE_ENV=test jest --runInBand --detectOpenHandles",
+    "dev": "npx nodemon",
+    "build": "rimraf ./dist && npx tsc",
+    "start": "npm run build && node dist/server",
+    "lint": "npx eslint ./src",
+    "format": "npx eslint ./src --fix",
+    "migration": "ts-node ./src/migration/liquibase.ts",
+    "cr-db": "cross-env DB_NAME_NEW=postgres ts-node ./src/db/dbCreate.ts",
+    "cl-db": "cross-env DB_NAME_NEW=postgres ts-node ./src/db/dbClear.ts",
+    "cr-test-db": "cross-env DB_NAME_NEW=test_db ts-node ./src/db/dbCreate.ts",
+    "cl-test-db": "cross-env DB_NAME_NEW=test_db ts-node ./src/db/dbClear.ts",
+    "cr-auth-db": "cross-env DB_NAME_NEW=auth_db ts-node ./src/db/dbAuthCreate.ts",
+    "cl-auth-db": "cross-env DB_NAME_NEW=auth_db ts-node ./src/db/dbAuthClear.ts",
+    "cr-test-auth-db": "cross-env DB_NAME_NEW=test_auth_db ts-node ./src/db/dbAuthCreate.ts",
+    "cl-test-auth-db": "cross-env DB_NAME_NEW=test_auth_db ts-node ./src/db/dbAuthClear.ts"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/express": "^4.17.14",
+    "@types/jest": "^29.2.4",
+    "@types/node": "^18.11.13",
+    "@types/pg": "^8.6.5",
+    "@types/supertest": "^2.0.12",
+    "@types/validator": "^13.7.10",
+    "@typescript-eslint/eslint-plugin": "^5.46.0",
+    "@typescript-eslint/parser": "^5.46.0",
+    "axios": "^1.2.1",
+    "cross-env": "^7.0.3",
+    "eslint": "^8.29.0",
+    "eslint-plugin-prettier": "^4.2.1",
+    "husky": "^8.0.2",
+    "jest": "^29.3.1",
+    "nodemon": "^2.0.20",
+    "prettier": "2.8.1",
+    "rimraf": "^3.0.2",
+    "supertest": "^6.3.3",
+    "ts-jest": "^29.0.3",
+    "ts-node": "^10.9.1",
+    "typescript": "^4.9.4"
+  },
+  "dependencies": {
+    "@types/pg-pool": "^2.0.3",
+    "class-validator": "^0.14.0",
+    "express": "^4.18.2",
+    "kafka-node": "^5.0.0",
+    "liquibase": "^4.4.0",
+    "node-liquibase": "^4.1.1",
+    "pg": "^8.8.0",
+    "pg-pool": "^3.5.2"
+  }
+}

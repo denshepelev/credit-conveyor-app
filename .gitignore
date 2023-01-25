@@ -2,9 +2,21 @@
 /dist
 /node_modules
 /creditConveyor/node_modules
-/creditConveyo/dist
-/microservice1/node_modules
-/microservice2/node_modules
+/creditConveyor/dist
+/deal/node_modules
+/deal/dist
+/deal/full-stack
+/deal/pgadmin
+/deal/pgdata
+/deal/postgres_data
+/application/node_modules
+/application/dist
+/dossier/node_modules
+/dossier/dist
+/auth/node_modules
+/auth/dist
+/gateway/node_modules
+/gateway/dist
 
 # Logs
 logs
@@ -17,6 +29,7 @@ lerna-debug.log*
 
 # OS
 .DS_Store
+.env
 
 # Tests
 /coverage

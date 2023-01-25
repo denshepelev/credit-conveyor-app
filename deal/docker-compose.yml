@@ -1,0 +1,25 @@
+version: "3.9"
+services:
+  db:
+    container_name: postgres_container
+    image: postgres
+    environment:
+      POSTGRES_DB: "postgres"
+      POSTGRES_USER: "root"
+      POSTGRES_PASSWORD: "root"
+      PGDATA: "./var/lib/postgresql/data/pgdata"
+    volumes:
+      - ./postgres_data:/var/lib/postgresql
+    ports:
+      - "5432:5432"
+
+  pgadmin:
+    container_name: pgadmin_container
+    image: dpage/pgadmin4
+    environment:
+      PGADMIN_DEFAULT_EMAIL: "denisshepelev@mail.ru"
+      PGADMIN_DEFAULT_PASSWORD: "root"
+    volumes:
+    - ./pgadmin:/var/lib/pgadmin
+    ports:
+    - "5050:80"

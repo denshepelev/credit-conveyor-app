@@ -1,4 +1,4 @@
-import { PaymentScheduleElementDTO } from "./paymentScheduleElement.dto";
+import { PaymentScheduleElementDTO } from './paymentScheduleElement.dto.js';
 
 export interface CreditDTO {
   amount: number;

@@ -5,8 +5,8 @@ import {
   //Min,
   NotContains,
 } from "class-validator";
-import { EmploymentStatus } from "../types/employmentStatus.enum";
-import { Position } from "../types/position.enum";
+import { EmploymentStatus } from "../types/employmentStatus.enum.js";
+import { Position } from "../types/position.enum.js";
 
 export class EmploymentDTO {
   @IsDefined()

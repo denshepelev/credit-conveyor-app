@@ -1,6 +1,6 @@
-import { EmploymentDTO } from "./employment.dto";
-import { Gender } from "../types/gender.enum";
-import { MaritalStatus } from "../types/maritalStatus.enum";
+import { EmploymentDTO } from './employment.dto.js';
+import { Gender } from '../types/gender.enum.js';
+import { MaritalStatus } from '../types/maritalStatus.enum.js';
 import {
   IsBoolean,
   IsDateString,
@@ -12,8 +12,8 @@ import {
   Min,
   MinLength,
   ValidateNested,
-} from "class-validator";
-import { MinAge } from "../validation/validation.decorator";
+} from 'class-validator';
+import { MinAge } from '../validation/validation.decorator.js';
 
 export class ScoringDataDTO {
   @IsDefined()
@@ -49,13 +49,13 @@ export class ScoringDataDTO {
   @IsDefined()
   @IsString()
   @Length(4, 4, {
-    message: "passport series should be four digits long",
+    message: 'passport series should be four digits long',
   })
   passportSeries!: string;
   @IsDefined()
   @IsString()
   @Length(6, 6, {
-    message: "passport number should be six digits long",
+    message: 'passport number should be six digits long',
   })
   passportNumber!: string;
   @IsDefined()
@@ -81,4 +81,5 @@ export class ScoringDataDTO {
   @IsDefined()
   @IsBoolean()
   isSalaryClient!: boolean;
+  firstPayment?: string;
 }

@@ -1,10 +1,10 @@
-import express from "express";
+import express from 'express';
 
-import * as calculationController from "../controllers/calculation.controller";
+import * as calculationController from '../controllers/calculation.controller.js';
 
 const router = express.Router();
 
 /* POST scoring */
-router.post("/", calculationController.getCalculationResult);
+router.post('/', calculationController.getCalculationResult);
 
 export { router as default };

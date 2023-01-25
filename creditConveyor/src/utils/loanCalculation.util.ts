@@ -1,20 +1,11 @@
-import { EmploymentStatus } from "../types/employmentStatus.enum";
-import { Gender } from "../types/gender.enum";
-import { MaritalStatus } from "../types/maritalStatus.enum";
-import { Position } from "../types/position.enum";
+import { EmploymentStatus } from '../types/employmentStatus.enum.js';
+import { Gender } from '../types/gender.enum.js';
+import { MaritalStatus } from '../types/maritalStatus.enum.js';
+import { Position } from '../types/position.enum.js';
 
-const calculateMonthlyPayment = (
-  totalAmount: number,
-  term: number,
-  rateProportion: number
-): number => {
+const calculateMonthlyPayment = (totalAmount: number, term: number, rateProportion: number): number => {
   const monthlyPayment: number =
-    Math.round(
-      totalAmount *
-        (rateProportion +
-          rateProportion / (Math.pow(1 + rateProportion, term) - 1)) *
-        100
-    ) / 100;
+    Math.round(totalAmount * (rateProportion + rateProportion / (Math.pow(1 + rateProportion, term) - 1)) * 100) / 100;
   return monthlyPayment;
 };
 
@@ -22,15 +13,10 @@ const calculateRateProportion = (totalRate: number): number => {
   return totalRate / 100 / 12;
 };
 
-const calculateTotalAmount = (
-  amount: number,
-  term: number,
-  isInsuranceEnabled: boolean
-): number => {
+const calculateTotalAmount = (amount: number, term: number, isInsuranceEnabled: boolean): number => {
   if (isInsuranceEnabled) {
     const INSURANCE_PERCENTAGE = 5;
-    const totalAmount =
-      amount + amount * (INSURANCE_PERCENTAGE / 100) * (term / 12);
+    const totalAmount = amount + amount * (INSURANCE_PERCENTAGE / 100) * (term / 12);
     return totalAmount;
   }
   return amount;
@@ -45,7 +31,7 @@ const calculateTotalRate = (
   employmentStatus?: EmploymentStatus,
   position?: Position,
   maritalStatus?: MaritalStatus,
-  dependentAmount?: number
+  dependentAmount?: number,
 ): number => {
   const INSURANCE_RATE = -2;
   const SALARY_RATE = -1;
@@ -77,11 +63,7 @@ const calculateTotalRate = (
   let dependentRate: number;
 
   if (age && gender) {
-    if (
-      gender == Gender.Male ||
-      gender == Gender.Female ||
-      gender == Gender.NonBinary
-    ) {
+    if (gender == Gender.Male || gender == Gender.Female || gender == Gender.NonBinary) {
       if (gender == Gender.NonBinary) {
         genderRate = NON_BINARY_RATE;
       } else genderRate = 0;
@@ -156,18 +138,11 @@ const calculateTotalRate = (
   }
 
   return (
-    baseRate +
-    insuranceRate +
-    salaryRate +
-    genderRate +
-    employerRate +
-    positionRate +
-    maritalStatusRate +
-    dependentRate
+    baseRate + insuranceRate + salaryRate + genderRate + employerRate + positionRate + maritalStatusRate + dependentRate
   );
 };
 
-const calculatePSK = function (dates: Array<Date>, sum: Array<number>): number {
+const calculatePSK = function (dates: Array<string>, sum: Array<number>): number {
   /*
    * the approximate calculation  method is used with an accuracy of two decimal places
    * incoming parameters: dates - payment dates
@@ -181,9 +156,9 @@ const calculatePSK = function (dates: Array<Date>, sum: Array<number>): number {
   const cbp = Math.round(365 / bp);
 
   //filling array with days amount since receiving credit to day ever incrementing k payment
-  const days: Array<any> = [];
+  const days: Array<number> = [];
   for (let k = 0; k < m; k++) {
-    days[k] = (dates[k].getTime() - dates[0].getTime()) / (24 * 60 * 60 * 1000);
+    days[k] = (new Date(dates[k]).getTime() - new Date(dates[0]).getTime()) / (24 * 60 * 60 * 1000);
   }
 
   //calculating Ек и Qк for each payment
@@ -217,21 +192,13 @@ const calculatePSK = function (dates: Array<Date>, sum: Array<number>): number {
   return psk;
 };
 
-/*const calculateAge = (birthDate: Date): number => {
-  const diffMs: number = Date.now() - birthDate.getTime();
-  const ageDate: Date = new Date(diffMs);
-  const age: number = Math.abs(ageDate.getUTCFullYear() - 1970);
-  return age;
-};*/ //old one remove on next update;
-
 const calculateAge = (birthday: Date): number => {
   const ageDifMs = Date.now() - birthday.getTime();
   const ageDate = new Date(ageDifMs); // milliseconds from epoch
   return Math.abs(ageDate.getUTCFullYear() - 1970);
 };
 
-const roundFunction = (number: number) =>
-  Math.round((number + Number.EPSILON) * 100) / 100;
+const roundFunction = (number: number) => Math.round((number + Number.EPSILON) * 100) / 100;
 
 export {
   calculateMonthlyPayment,
