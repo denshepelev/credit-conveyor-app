@@ -14,5 +14,14 @@ app.use('/register', registerRoute);
 app.get('/token', auth, (req, res) => {
   res.sendStatus(200);
 });
+app.post('/testauth', async (req, res) => {
+  try {
+    res.status(200).send(req.body);
+  } catch (error) {
+    if (error instanceof Error) {
+      res.status(400).send({ error: error.message });
+    } else res.status(400).send({ error: 'unexpected error' });
+  }
+});
 
 export default app;

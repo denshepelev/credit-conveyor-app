@@ -26,7 +26,7 @@ export class OfferService {
   }
 
   async sendOffer(loanOfferDTO: LoanOfferDTO): Promise<void> {
-    const res = await axios.put('http://localhost:3002/deal/offer', loanOfferDTO);
+    const res = await axios.put('http://deal:3002/deal/offer', loanOfferDTO);
 
     if (res.status === 400) {
       throw new Error(res.data.error);

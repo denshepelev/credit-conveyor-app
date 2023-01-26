@@ -57,7 +57,7 @@ class ProducerFactory {
   private createProducer(): Producer {
     const kafka = new Kafka({
       clientId: 'producer-client',
-      brokers: ['localhost:9092'],
+      brokers: ['kafka1:29092'], //localhost:9092 for external and port 19092/9092
     });
 
     return kafka.producer({ createPartitioner: Partitioners.DefaultPartitioner });

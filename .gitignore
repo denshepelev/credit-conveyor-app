@@ -17,6 +17,10 @@
 /auth/dist
 /gateway/node_modules
 /gateway/dist
+/pgadmin
+/pgdata
+/postgres_data
+/full-stack
 
 # Logs
 logs

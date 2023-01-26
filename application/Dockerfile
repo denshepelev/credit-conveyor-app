@@ -1,11 +1,11 @@
 FROM node
 
-WORKDIR /gateway
+WORKDIR /application
 
 COPY . .
 
 RUN npm install
 
-EXPOSE 3006
+EXPOSE 3003
 
 CMD ["npm", "run", "start"]

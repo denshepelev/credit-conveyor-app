@@ -22,7 +22,7 @@ app.use(express.json()); // WE NO NEED PARSE JSON IN PROXY MODE, JUST TRANSFER I
 //app.use(express.urlencoded({ extended: false }));
 
 const apiProxyAuth = createProxyMiddleware({
-  target: 'http://localhost:3005',
+  target: 'http://auth:3005',
   changeOrigin: true,
   onProxyReq: fixRequestBody,
 });
@@ -32,7 +32,7 @@ app.use('/login', apiProxyAuth);
 app.use('/token', [auth, apiProxyAuth]);
 
 const apiProxyApplicationOffer = createProxyMiddleware({
-  target: 'http://localhost:3003',
+  target: 'http://application:3003',
   changeOrigin: true,
   pathRewrite: {
     '^/application/apply': '/application/offer',
@@ -44,7 +44,7 @@ const apiProxyApplicationOffer = createProxyMiddleware({
 app.use('/application/apply', [auth, apiProxyApplicationOffer]);
 
 const apiProxyApplicationCalc = createProxyMiddleware({
-  target: 'http://localhost:3002',
+  target: 'http://deal:3002',
   changeOrigin: true,
   pathRewrite: {
     '^/application/registration': '/deal/calculate', // rewrite path
@@ -56,7 +56,7 @@ const apiProxyApplicationCalc = createProxyMiddleware({
 app.use('/application/registration', [auth, apiProxyApplicationCalc]);
 
 const apiProxyApplication = createProxyMiddleware({
-  target: 'http://localhost:3003',
+  target: 'http://application:3003',
   changeOrigin: true,
   onProxyReq: fixRequestBody,
   logLevel: 'info',
@@ -65,7 +65,7 @@ const apiProxyApplication = createProxyMiddleware({
 app.use('/application', [auth, apiProxyApplication]);
 
 const apiProxyDocument = createProxyMiddleware({
-  target: 'http://localhost:3002',
+  target: 'http://deal:3002',
   changeOrigin: true,
   onProxyReq: fixRequestBody,
   pathRewrite: {
@@ -81,7 +81,25 @@ app.use('/documentation', swaggerUi.serve, swaggerUi.setup(apiDocumentation));
 app.post('/test', async (req, res) => {
   try {
     console.log('Authorization: ' + req.headers.authorization);
-    const response = await axios.get('http://localhost:3005/token', {
+    const response = await axios.get('http://auth:3005/token', {
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: req.headers.authorization,
+      },
+      data: req.body,
+    });
+    res.status(200).send(response.data);
+  } catch (error) {
+    if (error instanceof Error) {
+      res.status(400).send({ error: error.message });
+    } else res.status(400).send({ error: 'unexpected error' });
+  }
+});
+
+app.post('/testauth', async (req, res) => {
+  try {
+    console.log('Authorization: ' + req.headers.authorization);
+    const response = await axios.post('http://auth:3005/testauth', {
       headers: {
         'Content-Type': 'application/json',
         Authorization: req.headers.authorization,

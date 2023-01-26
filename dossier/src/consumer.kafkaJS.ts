@@ -1,6 +1,6 @@
 import { Consumer, ConsumerSubscribeTopics, EachBatchPayload, Kafka, EachMessagePayload } from 'kafkajs';
 
-export default class ExampleConsumer {
+export default class KafkaJsConsumer {
   private kafkaConsumer: Consumer;
   //private messageProcessor: ExampleMessageProcessor;
 
@@ -19,6 +19,7 @@ export default class ExampleConsumer {
         'send-ses',
         'credit-issued',
         'application-denied',
+        'kafkatest',
       ],
       fromBeginning: false,
     };
@@ -61,6 +62,9 @@ export default class ExampleConsumer {
           for (const message of batch.messages) {
             const prefix = `${batch.topic}[${batch.partition} | ${message.offset}] / ${message.timestamp}`;
             console.log(`- ${prefix} ${message.key}#${message.value}`);
+            if (batch.topic == 'kafkatest') {
+              console.log('TEST TOPIC DETECTED, TRYING TO DO SOMETHING USEFUL');
+            }
           }
         },
       });
@@ -76,7 +80,8 @@ export default class ExampleConsumer {
   private createKafkaConsumer(): Consumer {
     const kafka = new Kafka({
       clientId: 'kafka1',
-      brokers: ['localhost:9092'],
+      brokers: ['kafka1:29092'],
+      connectionTimeout: 10000,
     });
     const consumer = kafka.consumer({ groupId: 'consumer-group' });
     return consumer;

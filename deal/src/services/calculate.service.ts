@@ -173,7 +173,7 @@ export class CalculateService {
   }
 
   public async getCredit(scoringData: ScoringDataDTO): Promise<CreditDTO> {
-    const res = await axios.post('http://localhost:3001/conveyor/calculation', scoringData).catch(function (error) {
+    const res = await axios.post('http://credit:3001/conveyor/calculation', scoringData).catch(function (error) {
       if (error.response) {
         // The request was made and the server responded with a status code
         // that falls out of the range of 2xx

@@ -30,7 +30,7 @@ export class ApplicationService {
   }
 
   async getOffers(loanApplication: LoanApplicationRequestDTO): Promise<Array<LoanOfferDTO>> {
-    const res = await axios.post('http://localhost:3002/deal/application', loanApplication).catch(function (error) {
+    const res = await axios.post('http://deal:3002/deal/application', loanApplication).catch(function (error) {
       if (error.response) {
         // The request was made and the server responded with a status code
         // that falls out of the range of 2xx

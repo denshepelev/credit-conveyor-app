@@ -13,9 +13,9 @@ export interface CustomRequest extends Request {
 export const auth = async (req: Request, res: Response, next: NextFunction) => {
   try {
     console.log(`gateway-auth: req.body: ${req.body}`); //redundant option, uncomment only while hard debugging //console.log(req)
-    logger.info('starting request http://localhost:3005/token');
+    logger.info('starting request http://auth:3005/token');
     const res = await axios
-      .get('http://localhost:3005/token', {
+      .get('http://auth:3005/token', {
         headers: {
           'Content-Type': 'application/json',
           Authorization: req.headers.authorization,

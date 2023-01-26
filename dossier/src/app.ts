@@ -10,10 +10,14 @@ import scheduleContent from './emails/scheduleContent.js';
 import creditTermBuilder from './emails/creditTermBuilder.js';
 import loanAgreementBuilder from './emails/loanAgreementBuilder.js';
 import secCodeBuilder from './emails/secCodeBuilder.js';
+//import KafkaJsConsumer from './consumer.kafkaJS.js'; //reserved kafka consumer!
 
 const app: Express = express();
 
-const client: KafkaClient = new KafkaClient({ kafkaHost: 'localhost:9092' });
+const client: KafkaClient = new KafkaClient({ kafkaHost: 'kafka1:29092' }); //localhost:9092 for external and ports 9092/19092
+
+//const kafkaJsConsumer: KafkaJsConsumer = new KafkaJsConsumer();  //reserved kafka consumer!
+//kafkaJsConsumer.startConsumer();  //reserved kafka consumer!
 
 const topics: OffsetFetchRequest[] = [
   { topic: 'finish-registration', partition: 0 },
@@ -22,6 +26,7 @@ const topics: OffsetFetchRequest[] = [
   { topic: 'send-ses', partition: 0 },
   { topic: 'credit-issued', partition: 0 },
   { topic: 'application-denied', partition: 0 },
+  { topic: 'kafkatest', partition: 0 },
 ];
 
 const options: ConsumerOptions = {
@@ -129,54 +134,34 @@ consumer.on('message', async function (message) {
   }
   switch (topic) {
     case Topics.finishRegistration: {
-      const text = 'Dear client. For detailed loan offer with schedule please follow bank cite and finish registration';
-      await mailSender(
-        value.email,
-        value.firstName,
-        value.lastName,
-        topic,
-        mailBuilder(value.firstName, value.lastName, text),
-      );
+      try {
+        const text =
+          'Dear client. For detailed loan offer with schedule please follow bank cite and finish registration';
+        await mailSender(
+          value.email,
+          value.firstName,
+          value.lastName,
+          topic,
+          mailBuilder(value.firstName, value.lastName, text),
+        );
+      } catch (error) {
+        if (error instanceof Error) {
+          logger.error(`sending message problem, see error: ${error.message}`);
+        }
+      }
       break;
     }
     case Topics.createDocuments: {
-      const text =
-        //send terms and schedule
-        'Dear client. We are happy to announce the loan approval for you. Next, you can read the terms of the approved loan. We propose to proceed to the next step and if you are ready - request a set of documents for signing';
-      await mailSender(
-        value.email,
-        value.firstName,
-        value.lastName,
-        topic,
-        mailBuilder(value.firstName, value.lastName, text, [
-          creditTermBuilder(
-            value.credit.amount,
-            value.credit.term,
-            value.credit.rate,
-            value.credit.psk,
-            value.credit.isInsuranceEnabled,
-            value.credit.isSalaryClient,
-          ),
-          scheduleBuilder(scheduleContent(value.credit.monthlyPayment, value.credit.paymentSchedule)),
-        ]),
-      );
-      break;
-    }
-    case Topics.sendDocuments: {
-      //send loan agreement
-      const text =
-        'Dear client. We se sent you a loan agreement. A loan agreement is the document in which a lender - usually a bank or other financial institution - sets out the terms and conditions under which it is prepared to make a loan available to a borrower. When you are ready, move on to the next step and request a digital signing key';
-      await mailSender(
-        value.email,
-        value.firstName,
-        value.lastName,
-        topic,
-        mailBuilder(value.firstName, value.lastName, text, [
-          loanAgreementBuilder(
-            value.firstName,
-            value.lastName,
-            value.credit.amount,
-            value.credit.rate,
+      try {
+        const text =
+          //send terms and schedule
+          'Dear client. We are happy to announce the loan approval for you. Next, you can read the terms of the approved loan. We propose to proceed to the next step and if you are ready - request a set of documents for signing';
+        await mailSender(
+          value.email,
+          value.firstName,
+          value.lastName,
+          topic,
+          mailBuilder(value.firstName, value.lastName, text, [
             creditTermBuilder(
               value.credit.amount,
               value.credit.term,
@@ -186,50 +171,127 @@ consumer.on('message', async function (message) {
               value.credit.isSalaryClient,
             ),
             scheduleBuilder(scheduleContent(value.credit.monthlyPayment, value.credit.paymentSchedule)),
-            '2023-01-14',
-          ),
-        ]),
-      );
+          ]),
+        );
+      } catch (error) {
+        if (error instanceof Error) {
+          logger.error(`sending message problem, see error: ${error.message}`);
+        }
+      }
+      break;
+    }
+    case Topics.sendDocuments: {
+      //send loan agreement
+      try {
+        const text =
+          'Dear client. We se sent you a loan agreement. A loan agreement is the document in which a lender - usually a bank or other financial institution - sets out the terms and conditions under which it is prepared to make a loan available to a borrower. When you are ready, move on to the next step and request a digital signing key';
+        await mailSender(
+          value.email,
+          value.firstName,
+          value.lastName,
+          topic,
+          mailBuilder(value.firstName, value.lastName, text, [
+            loanAgreementBuilder(
+              value.firstName,
+              value.lastName,
+              value.credit.amount,
+              value.credit.rate,
+              creditTermBuilder(
+                value.credit.amount,
+                value.credit.term,
+                value.credit.rate,
+                value.credit.psk,
+                value.credit.isInsuranceEnabled,
+                value.credit.isSalaryClient,
+              ),
+              scheduleBuilder(scheduleContent(value.credit.monthlyPayment, value.credit.paymentSchedule)),
+              '2023-01-14',
+            ),
+          ]),
+        );
+      } catch (error) {
+        if (error instanceof Error) {
+          logger.error(`sending message problem, see error: ${error.message}`);
+        }
+      }
       break;
     }
     case Topics.sendSes: {
       //send security code for loan agreement signing
-      const text = 'Dear client. We se sent you security code to sign your loan agreement. Never share security code';
-      await mailSender(
-        value.email,
-        value.firstName,
-        value.lastName,
-        topic,
-        mailBuilder(value.firstName, value.lastName, text, [secCodeBuilder(value.ses)]),
-      );
+      try {
+        const text = 'Dear client. We se sent you security code to sign your loan agreement. Never share security code';
+        await mailSender(
+          value.email,
+          value.firstName,
+          value.lastName,
+          topic,
+          mailBuilder(value.firstName, value.lastName, text, [secCodeBuilder(value.ses)]),
+        );
+      } catch (error) {
+        if (error instanceof Error) {
+          logger.error(`sending message problem, see error: ${error.message}`);
+        }
+      }
       break;
     }
     case Topics.creditIssued: {
       //send FINAL email about credit issued
-      const text = 'Dear client. You signed your loan agreement with digital security code. The loan is ISSUED';
-      await mailSender(
-        value.email,
-        value.firstName,
-        value.lastName,
-        topic,
-        mailBuilder(value.firstName, value.lastName, text),
-      );
+      try {
+        const text = 'Dear client. You signed your loan agreement with digital security code. The loan is ISSUED';
+        await mailSender(
+          value.email,
+          value.firstName,
+          value.lastName,
+          topic,
+          mailBuilder(value.firstName, value.lastName, text),
+        );
+      } catch (error) {
+        if (error instanceof Error) {
+          logger.error(`sending message problem, see error: ${error.message}`);
+        }
+      }
       break;
     }
     case Topics.applicationDenied: {
       //send email notify about failed loan application
-      const text = 'Dear client. Your loan application is denied status';
-      await mailSender(
-        value.email,
-        value.firstName,
-        value.lastName,
-        topic,
-        mailBuilder(value.firstName, value.lastName, text),
-      );
+      try {
+        const text = 'Dear client. Your loan application is denied status';
+        await mailSender(
+          value.email,
+          value.firstName,
+          value.lastName,
+          topic,
+          mailBuilder(value.firstName, value.lastName, text),
+        );
+      } catch (error) {
+        if (error instanceof Error) {
+          logger.error(`sending message problem, see error: ${error.message}`);
+        }
+      }
+      break;
+    }
+    case 'kafkatest': {
+      //send email notify about failed loan application
+      try {
+        const text = 'Dear client. this is test message!';
+        await mailSender(
+          'denisshepelev@mail.ru',
+          'Denis',
+          'Shepelev',
+          topic,
+          mailBuilder(value.firstName, value.lastName, text),
+        );
+        logger.info(`kafkatest happened and sent test message`);
+      } catch (error) {
+        if (error instanceof Error) {
+          logger.error(`sending message problem, see error: ${error.message}`);
+        }
+      }
+
       break;
     }
     default: {
-      logger.info(`Got unhandled topic, unsubscribe please topic: ${topic}`);
+      logger.info(`Received unhandled topic, unsubscribe please topic: ${topic}`);
       break;
     }
   }
@@ -237,6 +299,7 @@ consumer.on('message', async function (message) {
 
 consumer.on('error', (e) => {
   logger.error('Kafka Consumer error', e.message);
+  logger.error(e);
   logger.debug(e);
 });
 

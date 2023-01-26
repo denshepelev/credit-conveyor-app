@@ -99,7 +99,7 @@ export class ApplicationService {
   }
 
   async getOffers(loanApplication: LoanApplicationRequestDTO): Promise<Array<LoanOfferDTO>> {
-    const res = await axios.post('http://localhost:3001/conveyor/offers', loanApplication);
+    const res = await axios.post('http://credit:3001/conveyor/offers', loanApplication);
     //console.log(res.data);
     if (res.status === 400) {
       throw new Error(res.data.error);
@@ -108,7 +108,7 @@ export class ApplicationService {
   }
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   async getOffersAny(body: any): Promise<Array<LoanOfferDTO>> {
-    const res = await axios.post('http://localhost:3001/conveyor/offers', body);
+    const res = await axios.post('http://credit:3001/conveyor/offers', body);
     if (res.status === 400) {
       throw new Error(res.data.error);
     }

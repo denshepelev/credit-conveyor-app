@@ -8,4 +8,4 @@ RUN npm install
 
 EXPOSE 3005
 
-CMD [ "node", "./dist/server.js" ]
+CMD ["npm", "run", "start"]

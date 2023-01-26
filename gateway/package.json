@@ -1,11 +1,8 @@
 {
-  "name": "@credit-conveyor-app/gateway",
+  "name": "gateway",
   "version": "1.0.0",
   "description": "",
   "main": "./dist/server.js",
-  "modulePaths": [
-    "<rootDir>"
-  ],
   "type": "module",
   "husky": {
     "hooks": {
@@ -60,6 +57,8 @@
     "pg": "^8.8.0",
     "pg-pool": "^3.5.2",
     "properties-reader": "^2.2.0",
+    "swagger-jsdoc": "^6.2.8",
+    "swagger-ui-express": "^4.6.0",
     "winston": "^3.8.2"
   }
 }

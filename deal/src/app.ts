@@ -24,4 +24,11 @@ app.post('/email/:id', async (req: Request, res: Response) => {
   res.sendStatus(200);
 });
 
+app.post('/kafkatest', async (req: Request, res: Response) => {
+  await producer.start();
+  await producer.sendMessage('kafkatest', JSON.stringify({ kafka: req.body.kafka }));
+  await producer.shutdown();
+  res.sendStatus(200);
+});
+
 export default app;
