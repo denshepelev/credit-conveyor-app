@@ -235,7 +235,7 @@ response:
 
 status code: 200
 
-// on this step you should notification about credit issued via email
+// on this step you should get notification about credit issued via email
 
 ## Installation
 
